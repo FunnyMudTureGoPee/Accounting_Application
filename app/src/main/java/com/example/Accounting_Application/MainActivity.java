@@ -3,13 +3,16 @@ package com.example.Accounting_Application;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.Accounting_Application.databinding.ActivityMainBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -39,7 +42,11 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
+    private CircleButtonView circleButtonView; // 声明自定义控件对象
+
     private ItemAdapter adapter;
+
+    private FloatingActionButton fab;
 
     private static final String TAG = "MainActivity";
     @SuppressLint("RestrictedApi")
@@ -52,10 +59,31 @@ public class MainActivity extends AppCompatActivity {
 
 
         setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        circleButtonView = findViewById(R.id.circle_button); // 获取自定义控件对象
+
+        fab.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                adapter.AddItem(new Item(0,"add","test0",0.0));
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case  MotionEvent.ACTION_DOWN:
+                        fab.setVisibility(View.INVISIBLE);
+                        circleButtonView.myTouchEvent(event);
+                        circleButtonView.setReady(true);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        circleButtonView.myTouchEvent(event);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        fab.setVisibility(View.VISIBLE);
+                        circleButtonView.myTouchEvent(event);
+                        circleButtonView.setReady(false);
+                        adapter.AddItem(new Item(0,circleButtonView.getItemType(),circleButtonView.getItemType(),9.99));
+                        break;
+                }
+
+                return false;
             }
         });
 
@@ -125,10 +153,9 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-
     //测试条目列表
     private void initItem(){
-        for (int i = 1; i < 5; i++) {
+        for (int i = 1; i < 1; i++) {
             Item a =new Item(i,"test1","a",i*1.0);
             itemList.add(a);
             Item b =new Item(i,"test2","b",i*2.0);
