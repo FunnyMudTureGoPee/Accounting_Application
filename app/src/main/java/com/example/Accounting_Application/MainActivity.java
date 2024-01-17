@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private CircleButtonView circleButtonView; // 声明自定义控件对象
 
-    private ItemAdapter adapter;
+    public static ItemAdapter adapter;
 
     private FloatingActionButton fab;
 

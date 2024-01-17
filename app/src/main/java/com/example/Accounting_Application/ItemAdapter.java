@@ -1,21 +1,26 @@
 package com.example.Accounting_Application;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     private Context mContext;
-    private List<Item> mItemList;
+    public List<Item> mItemList;
     private RecyclerView recyclerView;
+    private static final String TAG = "ItemAdapter";
     public class ViewHolder extends RecyclerView.ViewHolder {
         private CardView cardView;
         private TextView item_name;
@@ -81,6 +86,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         // 通知适配器指定位置的数据被移除了
         notifyItemRemoved(position);
     }
+
 
     public void initSwipe() {
         // 创建一个 ItemTouchHelper.Callback 对象，用于定义卡片的滑动方向，滑动距离，滑动动画，滑动回调等
@@ -157,15 +163,29 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         helper.attachToRecyclerView(recyclerView);
     }
 
-
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int ViewType) {
         if (mContext==null){
             mContext=parent.getContext();
         }
         View view =LayoutInflater.from(mContext).inflate(R.layout.item,parent,false);
-        return new ViewHolder(view);
+
+        final ViewHolder holder = new ViewHolder(view);
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getLayoutPosition();
+
+                Item item = mItemList.get(position);
+                Intent intent = new Intent(mContext,ItemActivity.class);
+                intent.putExtra("item",item);
+                intent.putExtra("position",position);
+                mContext.startActivity(intent);
+
+
+            }
+        });
+        return holder;
     }
 
     @Override
@@ -178,6 +198,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     public void AddItem(Item item){
         mItemList.add(item);
+        updateItemList(mItemList);
+    }
+
+    public void ReNewItem(int index,Item item){
+        mItemList.set(index,item);
         updateItemList(mItemList);
     }
 

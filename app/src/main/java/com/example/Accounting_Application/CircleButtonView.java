@@ -14,8 +14,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public final class CircleButtonView extends View {
     // 定义一些常量和变量
     public static final int SECTOR_NUM = 4; // 扇形选区的数量
-    public static final int SECTOR_ANGLE = 360 / SECTOR_NUM; // 扇形选区的角度
-    public  static final int DEVIATION_ANGLE = 180
+    public static final int SECTOR_ANGLE = 180 / SECTOR_NUM; // 扇形选区的角度
+    public  static final int DEVIATION_ANGLE = 225
             ;//自xy坐标轴顺时针偏差DEVIATION ANGLE°的角
     public static final int[] SECTOR_COLORS = new int[]{Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW}; // 扇形选区的颜色
     public static final int[] SECTOR_ICONS = new int[]{android.R.drawable.ic_media_ff, android.R.drawable.ic_media_next, android.R.drawable.ic_media_pause, android.R.drawable.ic_media_previous}; // 扇形选区的图标
