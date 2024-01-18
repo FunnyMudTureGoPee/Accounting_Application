@@ -12,7 +12,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-
+import org.litepal.LitePal;
+import org.litepal.crud.LitePalSupport;
 
 import java.util.List;
 
@@ -81,6 +82,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
     public void removeItem(int position) {
+        //删除数据库中的内容
+        mItemList.get(position).delete();
         // 从 Item 列表中移除指定位置的 Item 对象
         mItemList.remove(position);
         // 通知适配器指定位置的数据被移除了
@@ -175,10 +178,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 int position = holder.getLayoutPosition();
-
-                Item item = mItemList.get(position);
                 Intent intent = new Intent(mContext,ItemActivity.class);
-                intent.putExtra("item",item);
+                intent.putExtra("item",mItemList.get(position));
                 intent.putExtra("position",position);
                 mContext.startActivity(intent);
 
@@ -190,10 +191,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Item item = mItemList.get(position);
-        holder.getItem_name().setText(item.getItem_name());
-        holder.getItem_type().setText(item.getItem_type());
-        holder.getItem_value().setText("" + item.getItem_value());
+        holder.getItem_name().setText(mItemList.get(position).getItem_name());
+        holder.getItem_type().setText(mItemList.get(position).getItem_type());
+        holder.getItem_value().setText("" + mItemList.get(position).getItem_value());
     }
 
     public void AddItem(Item item){
@@ -202,7 +202,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     }
 
     public void ReNewItem(int index,Item item){
-        mItemList.set(index,item);
+
+        mItemList.get(index).ReNewItem(item);
         updateItemList(mItemList);
     }
 

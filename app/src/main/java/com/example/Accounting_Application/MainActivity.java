@@ -21,7 +21,12 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.litepal.LitePal;
+import org.litepal.crud.LitePalSupport;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
 
+    SimpleDateFormat format1 = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+
     private static final String TAG = "MainActivity";
     @SuppressLint("RestrictedApi")
     @Override
@@ -62,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         circleButtonView = findViewById(R.id.circle_button); // 获取自定义控件对象
+
+        //从数据库中读取数据
+        if (!LitePal.findAll(Item.class).isEmpty()) {
+            itemList= LitePal.findAll(Item.class);
+        }
 
         fab.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -79,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
                         fab.setVisibility(View.VISIBLE);
                         circleButtonView.myTouchEvent(event);
                         circleButtonView.setReady(false);
-                        adapter.AddItem(new Item(0,circleButtonView.getItemType(),circleButtonView.getItemType(),9.99));
+                        adapter.AddItem(Item.saveItem(new Item(circleButtonView.getItemType(),circleButtonView.getItemType(),9.99,format1.format(new Date()))));
+                        Log.d(TAG, "onTouch: "+format1.format(new Date()));
                         break;
                 }
 
@@ -87,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        initItem();
+
         RecyclerView recyclerView =(RecyclerView) findViewById(R.id.recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(this,1);
         recyclerView.setLayoutManager(layoutManager);
@@ -154,19 +167,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //测试条目列表
-    private void initItem(){
-        for (int i = 1; i < 1; i++) {
-            Item a =new Item(i,"test1","a",i*1.0);
-            itemList.add(a);
-            Item b =new Item(i,"test2","b",i*2.0);
-            itemList.add(b);
-            Item c =new Item(i,"test3","c",i*3.0);
-            itemList.add(c);
-            Item d =new Item(i,"test4","d",i*4.0);
-            itemList.add(d);
-            Log.d(TAG, "initItem: "+a.getItem_name());
-        }
-    }
 
 
 }

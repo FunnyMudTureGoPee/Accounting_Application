@@ -39,6 +39,7 @@ public class ItemActivity extends AppCompatActivity {
         EditText editText_Type = (EditText) findViewById(R.id.item_content_type);
         EditText editText_Name = (EditText) findViewById(R.id.item_content_name);
         EditText editText_Value = (EditText) findViewById(R.id.item_content_value);
+        EditText editText_Notes = (EditText) findViewById(R.id.item_content_notes);
         button = (FloatingActionButton) findViewById(R.id.item_content_Rer);
         //setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -50,6 +51,7 @@ public class ItemActivity extends AppCompatActivity {
         editText_Type.setHint(item.getItem_type());
         editText_Name.setHint(item.getItem_name());
         editText_Value.setHint(Double.toString(item.getItem_value()));
+        editText_Notes.setHint(item.getItem_notes());
 
         button.setOnClickListener(new View.OnClickListener(){
 
@@ -59,6 +61,7 @@ public class ItemActivity extends AppCompatActivity {
                 item.setItem_name(editText_Type.getHint().toString());
                 item.setItem_name(editText_Name.getHint().toString());
                 item.setItem_value(Double.parseDouble(editText_Value.getHint().toString()));
+                item.setItem_notes(editText_Notes.getHint().toString());
                 if (!editText_Type.getText().toString().isEmpty()){
                     item.setItem_type(editText_Type.getText().toString());
                 }
@@ -67,7 +70,9 @@ public class ItemActivity extends AppCompatActivity {
                 }
                 if (!editText_Value.getText().toString().isEmpty()){
                     item.setItem_value(Double.parseDouble(editText_Value.getText().toString()));
-
+                }
+                if (!editText_Notes.getText().toString().isEmpty()){
+                    item.setItem_notes(editText_Notes.getText().toString());
                 }
 
                 Toast.makeText(ItemActivity.this, "修改完毕", Toast.LENGTH_SHORT).show();

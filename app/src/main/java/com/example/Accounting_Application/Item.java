@@ -1,13 +1,20 @@
 package com.example.Accounting_Application;
 
-import java.io.Serializable;
+import android.util.Log;
+import org.litepal.crud.LitePalSupport;
 
-public class Item implements Serializable {
-    private int item_key;
+import java.io.Serializable;
+import java.util.Date;
+
+public class Item extends LitePalSupport implements Serializable {
+    private String item_notes;
     private String item_name;
     private String item_type;
     private double item_value;
     private String item_image;
+   private String item_date;
+
+    private static final String TAG = "Item";
 
 
     public String getItem_name() {
@@ -26,12 +33,12 @@ public class Item implements Serializable {
         this.item_type = item_type;
     }
 
-    public int getItem_key() {
-        return item_key;
+    public String getItem_notes() {
+        return item_notes;
     }
 
-    public void setItem_key(int item_key) {
-        this.item_key = item_key;
+    public void setItem_notes(String item_notes) {
+        this.item_notes = item_notes;
     }
 
     public double getItem_value() {
@@ -50,12 +57,37 @@ public class Item implements Serializable {
         this.item_image = item_image;
     }
 
-    public Item(int item_key, String item_name, String item_type, double item_value) {
-        this.item_key = item_key;
-        this.item_name = item_name;
-        this.item_type = item_type;
-        this.item_value = item_value;
+    public String getItem_date() {
+        return item_date;
+    }
+
+    public void setItem_date(String item_date) {
+        this.item_date = item_date;
+    }
+
+    public Item( String item_name, String item_type, double item_value, String date) {
+        setItem_notes("随便说点什么吧");
+        setItem_name(item_name);
+        setItem_type(item_type);
+        setItem_value(item_value);
+        setItem_date(date);
         //占位图片
         item_image="@drawable/ic_menu_slideshow.xml";
     }
+
+    public void ReNewItem(Item item){
+        setItem_notes(item.getItem_notes());
+        setItem_name(item.getItem_name());
+        setItem_type(item.getItem_type());
+        setItem_value(item.getItem_value());
+        setItem_date(item.getItem_date());
+        save();
+    }
+
+    public static Item saveItem(Item item){
+        item.save();
+        Log.d(TAG, "saveItem: "+new Date());
+        return item;
+    }
+
 }
