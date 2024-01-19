@@ -99,8 +99,6 @@ public final class CircleButtonView extends View {
                 // 如果按钮状态为按下
                 if (isPressed) {
 
-
-
                         // 计算触摸点和中心点的连线与X轴的夹角
                         float angle = (float) Math.toDegrees(Math.atan2(y , x ));
 

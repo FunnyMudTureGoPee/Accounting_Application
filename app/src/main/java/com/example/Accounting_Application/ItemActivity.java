@@ -62,9 +62,6 @@ public class ItemActivity extends AppCompatActivity {
                 item.setItem_name(editText_Name.getHint().toString());
                 item.setItem_value(Double.parseDouble(editText_Value.getHint().toString()));
                 item.setItem_notes(editText_Notes.getHint().toString());
-                if (!editText_Type.getText().toString().isEmpty()){
-                    item.setItem_type(editText_Type.getText().toString());
-                }
                 if (!editText_Name.getText().toString().isEmpty()){
                     item.setItem_name(editText_Name.getText().toString());
                 }

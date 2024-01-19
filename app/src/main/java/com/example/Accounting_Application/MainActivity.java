@@ -1,14 +1,18 @@
 package com.example.Accounting_Application;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.navigation.NavDestination;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.Accounting_Application.databinding.ActivityMainBinding;
@@ -21,6 +25,7 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
 import org.litepal.crud.LitePalSupport;
 
@@ -54,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
 
     SimpleDateFormat format1 = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+    SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
 
     private static final String TAG = "MainActivity";
+
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +79,16 @@ public class MainActivity extends AppCompatActivity {
 
         //从数据库中读取数据
         if (!LitePal.findAll(Item.class).isEmpty()) {
-            itemList= LitePal.findAll(Item.class);
+            String today =format2.format(new Date());
+            Log.d(TAG, "onCreate: "+today);
+            itemList =LitePal.where("item_date like ?", today.substring(0, 10) + "%").find(Item.class);
         }
 
         fab.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
-                    case  MotionEvent.ACTION_DOWN:
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
                         fab.setVisibility(View.INVISIBLE);
                         circleButtonView.myTouchEvent(event);
                         circleButtonView.setReady(true);
@@ -91,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
                         fab.setVisibility(View.VISIBLE);
                         circleButtonView.myTouchEvent(event);
                         circleButtonView.setReady(false);
-                        adapter.AddItem(Item.saveItem(new Item(circleButtonView.getItemType(),circleButtonView.getItemType(),9.99,format1.format(new Date()))));
-                        Log.d(TAG, "onTouch: "+format1.format(new Date()));
+                        adapter.AddItem(Item.saveItem(new Item(circleButtonView.getItemType(), circleButtonView.getItemType(), 9.99, format1.format(new Date()))));
+                        Log.d(TAG, "onTouch: " + format1.format(new Date()));
                         break;
                 }
 
@@ -101,11 +110,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        RecyclerView recyclerView =(RecyclerView) findViewById(R.id.recycler_view);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,1);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(layoutManager);
         // 获取 RecyclerView 的引用
-        adapter =new ItemAdapter(null,recyclerView,itemList);
+        adapter = new ItemAdapter(null, recyclerView, itemList);
         recyclerView.setAdapter(adapter);
 
 
@@ -120,6 +129,16 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        navigationView.setCheckedItem(R.id.nav_home);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem menuItem) {
+                Intent intent = new Intent(MainActivity.this,AnalysisActivity.class);
+                startActivity(intent);
+                return false;
+            }
+        });
 
         // 获取导航视图的引用
         NavigationView navigationView1 = findViewById(R.id.nav_view);
