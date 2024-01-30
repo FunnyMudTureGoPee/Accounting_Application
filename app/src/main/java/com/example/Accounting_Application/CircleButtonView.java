@@ -18,7 +18,7 @@ public final class CircleButtonView extends View {
     public  static final int DEVIATION_ANGLE = 225
             ;//自xy坐标轴顺时针偏差DEVIATION ANGLE°的角
     public static final int[] SECTOR_COLORS = new int[]{Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW}; // 扇形选区的颜色
-    public static final int[] SECTOR_ICONS = new int[]{android.R.drawable.ic_media_ff, android.R.drawable.ic_media_next, android.R.drawable.ic_media_pause, android.R.drawable.ic_media_previous}; // 扇形选区的图标
+    public static final int[] SECTOR_ICONS = new int[]{R.drawable.ic_foods, R.drawable.ic_clothing,R.drawable.ic_people, R.drawable.ic_travel}; // 扇形选区的图标
     private static final String[] ITEM_TYPE = new String[]{"饮食","衣物","家常","文旅"};
 
     private Paint paint; // 画笔
