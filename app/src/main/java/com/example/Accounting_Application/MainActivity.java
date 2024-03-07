@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.navigation.NavDestination;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         fab.setVisibility(View.VISIBLE);
                         circleButtonView.myTouchEvent(event);
                         circleButtonView.setReady(false);
-                        adapter.AddItem(Item.saveItem(new Item(circleButtonView.getItemType(), circleButtonView.getItemType(), 9.99, format1.format(new Date()))));
+                        adapter.AddItem(Item.saveItem(new Item(circleButtonView.getItemType(), circleButtonView.getItemType(), circleButtonView.getValue(), format1.format(new Date()))));
                         Log.d(TAG, "onTouch: " + format1.format(new Date()));
                         break;
                 }
