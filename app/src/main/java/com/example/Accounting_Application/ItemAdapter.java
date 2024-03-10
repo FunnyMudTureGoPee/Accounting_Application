@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.cardview.widget.CardView;
@@ -22,8 +23,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     public List<Item> mItemList;
     private RecyclerView recyclerView;
     private static final String TAG = "ItemAdapter";
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private CardView cardView;
+        private ImageView imageView;
         private TextView item_name;
         private TextView item_type;
         private TextView item_value;
@@ -31,6 +34,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         public ViewHolder(View view) {
             super(view);
             cardView = (CardView) view;
+            imageView = (ImageView) view.findViewById(R.id.item_image);
             item_name = (TextView) view.findViewById(R.id.item_name);
             item_type = (TextView) view.findViewById(R.id.item_type);
             item_value = (TextView) view.findViewById(R.id.item_value);
@@ -63,24 +67,34 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         public void setItem_value(TextView item_value) {
             this.item_value = item_value;
         }
+
+        public ImageView getImageView() {
+            return imageView;
+        }
+
+        public void setImageView(ImageView imageView) {
+            this.imageView = imageView;
+        }
     }
 
-    public ItemAdapter(Context context,RecyclerView rcv, List<Item> itemList) {
+    public ItemAdapter(Context context, RecyclerView rcv, List<Item> itemList) {
         this.mContext = context;
         this.mItemList = itemList;
-        recyclerView=rcv;
-        // 调用 initSwipe() 方法，用于初始化您的 ItemTouchHelper 对象和 RecyclerView 对象
+        recyclerView = rcv;
+        // 调用 initSwipe() 方法，用于初始化 ItemTouchHelper 对象和 RecyclerView 对象
         initSwipe();
     }
 
-    public ItemAdapter(List<Item> itemList){
-        mItemList= itemList;
+    public ItemAdapter(List<Item> itemList) {
+        mItemList = itemList;
     }
+
     public void updateItemList(List<Item> itemList) {
         this.mItemList = itemList;
         // 通知适配器数据发生了变化
         notifyDataSetChanged();
     }
+
     public void removeItem(int position) {
         //删除数据库中的内容
         mItemList.get(position).delete();
@@ -168,19 +182,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int ViewType) {
-        if (mContext==null){
-            mContext=parent.getContext();
+        if (mContext == null) {
+            mContext = parent.getContext();
         }
-        View view =LayoutInflater.from(mContext).inflate(R.layout.item,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item, parent, false);
 
         final ViewHolder holder = new ViewHolder(view);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = holder.getLayoutPosition();
-                Intent intent = new Intent(mContext,ItemActivity.class);
-                intent.putExtra("item",mItemList.get(position));
-                intent.putExtra("position",position);
+                Intent intent = new Intent(mContext, ItemActivity.class);
+                intent.putExtra("item", mItemList.get(position));
+                intent.putExtra("position", position);
                 mContext.startActivity(intent);
 
             }
@@ -190,17 +204,18 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.getImageView().setImageResource(mItemList.get(position).getItem_image());
         holder.getItem_name().setText(mItemList.get(position).getItem_name());
         holder.getItem_type().setText(mItemList.get(position).getItem_type());
         holder.getItem_value().setText("" + mItemList.get(position).getItem_value());
     }
 
-    public void AddItem(Item item){
+    public void AddItem(Item item) {
         mItemList.add(item);
         updateItemList(mItemList);
     }
 
-    public void ReNewItem(int index,Item item){
+    public void ReNewItem(int index, Item item) {
 
         mItemList.get(index).ReNewItem(item);
         updateItemList(mItemList);

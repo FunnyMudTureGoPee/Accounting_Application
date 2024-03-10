@@ -216,8 +216,7 @@ public final class CircleButtonView extends View {
                 isPressed = false;
                 // 重置被选中的扇形选区的索引
                 isReady = !isReady;
-                task1.cancel();
-                task2.cancel();
+
                 taskIsRun=false;
                 task1IsRun=false;
                 task2IsRun=false;

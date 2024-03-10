@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Item> itemList = new ArrayList<>();
 
-    public DrawerLayout mDrawerLayout;
-
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
@@ -56,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
 
-    private Animation animation= null;
+    private Animation animation = null;
 
     SimpleDateFormat format1 = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
     SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
@@ -95,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        ((View)tv.getParent()).setVisibility(View.VISIBLE);
-                        animation = AnimationUtils.loadAnimation(MainActivity.this,R.anim.anim_scale_2big);
+                        ((View) tv.getParent()).setVisibility(View.VISIBLE);
+                        animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_scale_2big);
                         ((View) tv.getParent()).startAnimation(animation);
                         fab.setVisibility(View.INVISIBLE);
                         circleButtonView.myTouchEvent(event);
@@ -117,10 +115,10 @@ public class MainActivity extends AppCompatActivity {
                         circleButtonView.myTouchEvent(event);
                         circleButtonView.setReady(false);
                         adapter.AddItem(Item.saveItem(new Item(circleButtonView.getItemType(), circleButtonView.getItemType(), circleButtonView.getValue(), format1.format(new Date()))));
-                        Log.d(TAG, "onTouch: " + format1.format(new Date()));
-                        ((View)tv.getParent()).setVisibility(View.INVISIBLE);
-                        animation=AnimationUtils.loadAnimation(MainActivity.this,R.anim.anim_scale_2small);
-                        ((View)tv.getParent()).startAnimation(animation);
+
+                        ((View) tv.getParent()).setVisibility(View.INVISIBLE);
+                        animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_scale_2small);
+                        ((View) tv.getParent()).startAnimation(animation);
                         break;
                 }
 
@@ -128,19 +126,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        // 获取 RecyclerView 的引用
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(layoutManager);
-        // 获取 RecyclerView 的引用
-        adapter = new ItemAdapter(null, recyclerView, itemList);
+
+        adapter = new ItemAdapter(MainActivity.this, recyclerView, itemList);
         recyclerView.setAdapter(adapter);
 
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        // 将每个菜单ID作为一组ID传递，因为每个菜单都应被视为顶级目的地。
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
                 .setOpenableLayout(drawer)
@@ -148,7 +145,10 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+/*
 
+ */
+        // 菜单的点击事件
         navigationView.setCheckedItem(R.id.nav_home);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -158,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
 
         // 获取导航视图的引用
         NavigationView navigationView1 = findViewById(R.id.nav_view);

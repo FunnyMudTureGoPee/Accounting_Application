@@ -11,9 +11,10 @@ public class Item extends LitePalSupport implements Serializable {
     private String item_name;
     private String item_type;
     private double item_value;
-    private String item_image;
-   private String item_date;
+    private int item_image;
+    private String item_date;
 
+    private final int[] imagelist = new int[]{R.drawable.ic_clothing,R.drawable.ic_foods,R.drawable.ic_people,R.drawable.ic_travel};
     private static final String TAG = "Item";
 
 
@@ -49,11 +50,11 @@ public class Item extends LitePalSupport implements Serializable {
         this.item_value = item_value;
     }
 
-    public String getItem_image() {
+    public int getItem_image() {
         return item_image;
     }
 
-    public void setItem_image(String item_image) {
+    public void setItem_image(int item_image) {
         this.item_image = item_image;
     }
 
@@ -65,17 +66,33 @@ public class Item extends LitePalSupport implements Serializable {
         this.item_date = item_date;
     }
 
-    public Item( String item_name, String item_type, double item_value, String date) {
+    public Item(String item_name, String item_type, double item_value, String date) {
         setItem_notes("随便说点什么吧");
         setItem_name(item_name);
         setItem_type(item_type);
         setItem_value(item_value);
         setItem_date(date);
-        //占位图片
-        item_image="@drawable/ic_menu_slideshow.xml";
+        //占位图片  "饮食","衣物","家常","文旅"
+        switch (item_type) {
+            case "饮食":
+                item_image = imagelist[1];
+                break;
+            case "衣物":
+                item_image = imagelist[0];
+                break;
+            case "家常":
+                item_image = imagelist[2];
+                break;
+            case "文旅":
+                item_image = imagelist[3];
+                break;
+            default:
+                item_image = R.drawable.ic_menu_gallery;
+        }
+
     }
 
-    public void ReNewItem(Item item){
+    public void ReNewItem(Item item) {
         setItem_notes(item.getItem_notes());
         setItem_name(item.getItem_name());
         setItem_type(item.getItem_type());
@@ -84,9 +101,9 @@ public class Item extends LitePalSupport implements Serializable {
         save();
     }
 
-    public static Item saveItem(Item item){
+    public static Item saveItem(Item item) {
         item.save();
-        Log.d(TAG, "saveItem: "+new Date());
+        Log.d(TAG, "saveItem: " + new Date());
         return item;
     }
 

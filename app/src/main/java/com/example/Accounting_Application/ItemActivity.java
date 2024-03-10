@@ -47,7 +47,9 @@ public class ItemActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         collapsingToolbarLayout.setTitle(item.getItem_name());
-        Glide.with(this).load(item.getItem_image()).load(imageView);
+        //Glide.with(this).load(item.getItem_image()).load(imageView);
+        imageView.setImageResource(item.getItem_image());
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         editText_Type.setHint(item.getItem_type());
         editText_Name.setHint(item.getItem_name());
         editText_Value.setHint(Double.toString(item.getItem_value()));
