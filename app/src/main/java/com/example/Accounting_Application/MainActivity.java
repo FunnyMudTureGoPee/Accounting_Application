@@ -4,31 +4,28 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Menu;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.navigation.NavDestination;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.Accounting_Application.databinding.ActivityMainBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-
 import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
-import org.litepal.crud.LitePalSupport;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,12 +56,14 @@ public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
 
+    private Animation animation= null;
+
     SimpleDateFormat format1 = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
     SimpleDateFormat format2 = new SimpleDateFormat("YYYY-MM-dd");
 
     private static final String TAG = "MainActivity";
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint({"RestrictedApi", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,22 +79,38 @@ public class MainActivity extends AppCompatActivity {
 
         //从数据库中读取数据
         if (!LitePal.findAll(Item.class).isEmpty()) {
-            String today =format2.format(new Date());
-            Log.d(TAG, "onCreate: "+today);
-            itemList =LitePal.where("item_date like ?", today.substring(0, 10) + "%").find(Item.class);
+            String today = format2.format(new Date());
+            Log.d(TAG, "onCreate: " + today);
+            itemList = LitePal.where("item_date like ?", today.substring(0, 10) + "%").find(Item.class);
         }
+
+        TextView tv = (TextView) findViewById(R.id.tip);
 
         fab.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
+                String temptype = "";
+                double tempvalue = 0;
+
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        ((View)tv.getParent()).setVisibility(View.VISIBLE);
+                        animation = AnimationUtils.loadAnimation(MainActivity.this,R.anim.anim_scale_2big);
+                        ((View) tv.getParent()).startAnimation(animation);
                         fab.setVisibility(View.INVISIBLE);
                         circleButtonView.myTouchEvent(event);
                         circleButtonView.setReady(true);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         circleButtonView.myTouchEvent(event);
+                        if (temptype != circleButtonView.getItemType() && tempvalue != circleButtonView.getValue()) {
+                            tv.setText(circleButtonView.getItemType() + "," + circleButtonView.getValue());
+                        }
+                        temptype = circleButtonView.getItemType();
+                        tempvalue = circleButtonView.getValue();
+
+
                         break;
                     case MotionEvent.ACTION_UP:
                         fab.setVisibility(View.VISIBLE);
@@ -103,6 +118,9 @@ public class MainActivity extends AppCompatActivity {
                         circleButtonView.setReady(false);
                         adapter.AddItem(Item.saveItem(new Item(circleButtonView.getItemType(), circleButtonView.getItemType(), circleButtonView.getValue(), format1.format(new Date()))));
                         Log.d(TAG, "onTouch: " + format1.format(new Date()));
+                        ((View)tv.getParent()).setVisibility(View.INVISIBLE);
+                        animation=AnimationUtils.loadAnimation(MainActivity.this,R.anim.anim_scale_2small);
+                        ((View)tv.getParent()).startAnimation(animation);
                         break;
                 }
 
@@ -135,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem menuItem) {
-                Intent intent = new Intent(MainActivity.this,AnalysisActivity.class);
+                Intent intent = new Intent(MainActivity.this, AnalysisActivity.class);
                 startActivity(intent);
                 return false;
             }

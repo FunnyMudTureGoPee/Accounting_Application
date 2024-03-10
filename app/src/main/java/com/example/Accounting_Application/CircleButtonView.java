@@ -7,10 +7,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import org.junit.rules.Stopwatch;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,6 +20,7 @@ public final class CircleButtonView extends View {
     public  static final int DEVIATION_ANGLE = 190;//自xy坐标轴顺时针偏差DEVIATION ANGLE°的角
     public static final int[] SECTOR_COLORS = new int[]{Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW}; // 扇形选区的颜色
     public static final int[] SECTOR_ICONS = new int[]{ R.mipmap.ic_people,R.mipmap.ic_travel,R.mipmap.ic_foods,R.mipmap.ic_clothing}; // 扇形选区的图标
+
     private static final String[] ITEM_TYPE = new String[]{"饮食","衣物","家常","文旅"};
 
     private Paint paint; // 画笔
@@ -37,6 +35,7 @@ public final class CircleButtonView extends View {
     private FloatingActionButton fab;
     private static final String TAG = "CircleButtonView";
 
+    public static final int dt = 200;//时间间隔
     private double value=10;//通过按下的持续时间决定的商品价值
     private float width= 100f;//加减选区的宽度
 
@@ -45,9 +44,12 @@ public final class CircleButtonView extends View {
     private boolean task1IsRun;
     private boolean task2IsRun;
 
-    TimerTask task1;
+    private TimerTask task1;
 
-    TimerTask task2;
+    private TimerTask task2;
+
+    private int n1 = 0;
+    private int n2 = 0;
 
 
 
@@ -155,14 +157,14 @@ public final class CircleButtonView extends View {
                             initTask();
                             if (task1IsRun&&angle<210){
                                 task1.cancel();
-                                timer.schedule(task2,0,500);
+                                timer.schedule(task2,0, dt);
                                 Log.w(TAG, "task1 cancel,task2 run" );
                                 task1IsRun=false;
                                 task2IsRun=true;
                             }
                             if (task2IsRun&&angle>210){
                                 task2.cancel();
-                                timer.schedule(task1,0,500);
+                                timer.schedule(task1,0, dt);
                                 Log.w(TAG, "task2 cancel,task1 run" );
                                 task2IsRun=false;
                                 task1IsRun=true;
@@ -174,14 +176,14 @@ public final class CircleButtonView extends View {
                                 initTask();
                                 if (angle>210){
                                     TimerTask t1=task1;
-                                    timer.schedule(t1,0,500);
+                                    timer.schedule(t1,0, dt);
                                     Log.w(TAG, "task1 run" );
                                     task1IsRun=true;
                                     taskIsRun=true;
                                 }
                                 if (angle<210){
                                     TimerTask t2=task2;
-                                    timer.schedule(t2,0,500);
+                                    timer.schedule(t2,0, dt);
                                     Log.w(TAG, "task2 run" );
                                     task2IsRun=true;
                                     taskIsRun=true;
@@ -189,11 +191,10 @@ public final class CircleButtonView extends View {
                             }
                         }
 
-
                         // 计算触摸点所在的扇形选区的索引
                         int index = (int) ((angle + (SECTOR_ANGLE/SECTOR_NUM)) / SECTOR_ANGLE) % SECTOR_NUM;
                         // 如果索引和之前的不同，表示触摸点移动到了另一个扇形选区
-                        if (index != selectedSector) {
+                        if (index != selectedSector&&distance<radius) {
                             // 更新被选中的扇形选区的索引
                             selectedSector = index;
                             // 执行相应的操作，例如改变按钮的效果
@@ -201,7 +202,9 @@ public final class CircleButtonView extends View {
                             // 这里只是打印一条日志，具体的操作可以根据需求自定义
                             Log.d(TAG, "Selected sector: " + selectedSector);
                             Log.d(TAG, "angle: "+angle);
-
+                            taskIsRun=false;
+                            task1IsRun=false;
+                            task2IsRun=false;
 
                         }
 
@@ -264,21 +267,38 @@ public final class CircleButtonView extends View {
         this.value = value;
     }
     private void initTask(){
+
         task1= new TimerTask() {
             @Override
             public void run() {
-                value+=0.5;
+                if (n1 < 8) {
+                    value+=0.5;
+                } else if (n1<16) {
+                    value+=1;
+                } else {
+                    value+=5;
+                }
+                n1++;
                 if (!task1IsRun){
                     cancel();
+                    n1=0;
                 }
             }
         };
         task2 = new TimerTask() {
             @Override
             public void run() {
-                value-=0.5;
+                if (n2 < 8) {
+                    value-=0.5;
+                } else if (n2<16) {
+                    value-=1;
+                } else  {
+                    value-=5;
+                }
+                n2++;
                 if (!task2IsRun){
                     cancel();
+                    n2=0;
                 }
             }
         };
